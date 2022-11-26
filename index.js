@@ -24,6 +24,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 const servicesCollections = client.db('dreamShop').collection('services');
 const cartsCollections = client.db('dreamShop').collection('cart')
+const blogsCollections = client.db('dreamShop').collection('blogs')
 async function run() {
     try {
         app.get('/services', async (req, res) => {
@@ -58,6 +59,11 @@ async function run() {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
             const result = await cartsCollections.deleteOne(query)
+            res.send(result)
+        })
+        app.get('/blogs', async (req, res) => {
+            const query = {}
+            const result = await blogsCollections.find(query).toArray()
             res.send(result)
         })
     }
