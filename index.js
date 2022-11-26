@@ -8,7 +8,7 @@ const port = process.env.PORT || 5000
 
 // Midlleware
 app.use(cors())
-app.use(express())
+app.use(express.json())
 
 app.get('/', (req, res) => {
     res.send('Your server is Running')
@@ -23,7 +23,7 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@clu
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 const servicesCollections = client.db('dreamShop').collection('services');
-
+const cartsCollections = client.db('dreamShop').collection('cart')
 async function run() {
     try {
         app.get('/services', async (req, res) => {
@@ -35,6 +35,23 @@ async function run() {
             const id = req.params.id
             const query = { _id: ObjectId(id) }
             const result = await servicesCollections.find(query).toArray()
+            res.send(result)
+        })
+        app.post('/cart', async (req, res) => {
+            const cart = req.body
+            console.log(req.body)
+            const result = await cartsCollections.insertOne(cart);
+            res.send(result)
+        })
+        app.get('/cart', async (req, res) => {
+            const email = req.query.email
+            let query = {}
+            if (email) {
+                query = {
+                    email: email
+                }
+            }
+            const result = await cartsCollections.find(query).toArray()
             res.send(result)
         })
     }
