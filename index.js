@@ -131,6 +131,22 @@ async function run() {
             const sellers = await usersCollections.find(query).toArray()
             res.send(sellers)
         })
+
+        //seller verify route 
+        app.put('/seller/:id', async (req, res) => {
+            const id = req.params.id
+            const filter = { _id: ObjectId(id) }
+            const options = { upset: true }
+            const updateDoc = {
+                $set: {
+                    stutas: true,
+                }
+
+            }
+            const result = await usersCollections.updateOne(filter, updateDoc, options)
+            res.send(result)
+        })
+
         // sellers delete 
         app.delete('/sellers/:id', async (req, res) => {
             const id = req.params.id;
@@ -142,7 +158,6 @@ async function run() {
         // add product *****
         app.put('/services/:catagoray', async (req, res) => {
             const service = req.body
-            const id = { id: 'bccdas444cb' }
             const catagoray = req.params.catagoray
             const filter = { catagoray: catagoray }
             const options = { upset: true }
