@@ -97,7 +97,7 @@ async function run() {
             const email = req.params.email;
             const query = { email: email }
             const user = await usersCollections.findOne(query);
-            res.send({ isSeller: user?.role === 'seller' })
+            res.send({ isSeller: user?.seller === 'seller' })
         })
         app.post('/booking', async (req, res) => {
             const booking = req.body;
@@ -120,6 +120,21 @@ async function run() {
             const id = req.params.id
             const query = { _id: ObjectId(id) }
             const result = await bookingsCollections.deleteOne(query);
+            res.send(result)
+        })
+
+        // add product *****
+        app.put('/services', async (req, res) => {
+            const service = req.body
+            const { catagoray } = service
+            const filter = { catagoray: catagoray }
+            const options = { upset: true }
+            const updateDoc = {
+                $push: {
+                    service: service
+                }
+            }
+            const result = await servicesCollections.updateOne(filter, updateDoc, options)
             res.send(result)
         })
     }
