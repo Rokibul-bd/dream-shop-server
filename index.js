@@ -2,6 +2,8 @@ const express = require('express');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const cors = require('cors');
+//genarate unique key
+// const { uuid } = require("uuid")
 const app = express()
 const port = process.env.PORT || 5000
 
@@ -74,7 +76,7 @@ async function run() {
             res.send(result);
         })
         app.get('/users', async (req, res) => {
-            const query = {}
+            const query = { seller: 'user' } // shoud be role user
             const result = await usersCollections.find(query).toArray()
             res.send(result)
         })
@@ -92,7 +94,7 @@ async function run() {
             res.send({ isAdmin: user?.role === 'admin' })
 
         })
-        // seller route 
+        // seller route get by email
         app.get('/users/seller/:email', async (req, res) => {
             const email = req.params.email;
             const query = { email: email }
@@ -123,16 +125,32 @@ async function run() {
             res.send(result)
         })
 
+        // get all seller 
+        app.get('/sellers', async (req, res) => {
+            const query = { seller: 'seller' }
+            const sellers = await usersCollections.find(query).toArray()
+            res.send(sellers)
+        })
+        // sellers delete 
+        app.delete('/sellers/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await usersCollections.deleteOne(query)
+            res.send(result)
+        })
+
         // add product *****
-        app.put('/services', async (req, res) => {
+        app.put('/services/:catagoray', async (req, res) => {
             const service = req.body
-            const { catagoray } = service
+            const id = { id: 'bccdas444cb' }
+            const catagoray = req.params.catagoray
             const filter = { catagoray: catagoray }
             const options = { upset: true }
             const updateDoc = {
                 $push: {
-                    service: service
+                    service: service,
                 }
+
             }
             const result = await servicesCollections.updateOne(filter, updateDoc, options)
             res.send(result)
