@@ -29,6 +29,7 @@ const cartsCollections = client.db('dreamShop').collection('cart')
 const blogsCollections = client.db('dreamShop').collection('blogs')
 const usersCollections = client.db('dreamShop').collection('users')
 const bookingsCollections = client.db('dreamShop').collection('bookings')
+const sellesStepsCollections = client.db('dreamShop').collection('sellesSteps')
 async function run() {
     try {
         app.get('/services', async (req, res) => {
@@ -48,6 +49,13 @@ async function run() {
             const result = await cartsCollections.insertOne(cart);
             res.send(result)
         })
+        // sellesSteps get route 
+        app.get('/sellessteps', async (req, res) => {
+            const query = {}
+            const sellesSteps = await sellesStepsCollections.find(query).toArray()
+            res.send(sellesSteps)
+        })
+
         app.get('/cart', async (req, res) => {
             const email = req.query.email
             let query = {}
@@ -145,6 +153,14 @@ async function run() {
             }
             const result = await usersCollections.updateOne(filter, updateDoc, options)
             res.send(result)
+        })
+
+        // seller verifyed update 
+        app.get('/sellers/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email }
+            const seller = await usersCollections.find(query).toArray()
+            res.send(seller)
         })
 
         // sellers delete 
