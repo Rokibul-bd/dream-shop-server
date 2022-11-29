@@ -40,8 +40,8 @@ async function run() {
         app.get('/services/:id', async (req, res) => {
             const id = req.params.id
             const query = { _id: ObjectId(id) }
-            const result = await servicesCollections.find(query).toArray()
-            res.send(result)
+            const products = await servicesCollections.find(query).toArray()
+            res.send(products)
         })
         app.post('/cart', async (req, res) => {
             const cart = req.body
@@ -116,7 +116,6 @@ async function run() {
         })
         app.get('/booking', async (req, res) => {
             const email = req.query.email
-            console.log(email)
             let query = {}
             if (email) {
                 query = {
@@ -186,6 +185,7 @@ async function run() {
             const result = await servicesCollections.updateOne(filter, updateDoc, options)
             res.send(result)
         })
+
     }
     finally {
 
